@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MathQuiz</string>
+    <string name="greeting">Laipni lūdzam MathQuiz!</string>
+    <string name="difficulty_select">Izvēlieties sarežģītību</string>
+    <string name="start">Sāciet spēli!</string>
+    <string name="gameover">"Spēle ir beigusies! Jūsu rezultāts: "</string>
+    <string name="restart">Restartējiet spēli</string>
+    <string name="easy">Vienkārša</string>
+    <string name="medium">Vidējā</string>
+    <string name="hard">Smagā</string>
+</resources>

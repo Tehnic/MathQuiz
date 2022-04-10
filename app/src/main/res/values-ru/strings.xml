@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MathQuiz</string>
+    <string name="greeting">Добро пожаловать в MathQuiz!</string>
+    <string name="difficulty_select">Выберите сложность</string>
+    <string name="start">Начать игру!</string>
+    <string name="gameover">"Игра окончена! Ваш результат: "</string>
+    <string name="restart">Перезапустить игру</string>
+    <string name="easy">Лёгкая</string>
+    <string name="medium">Средняя</string>
+    <string name="hard">Сложная</string>
+</resources>
