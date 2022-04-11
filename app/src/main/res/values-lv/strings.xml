@@ -9,4 +9,5 @@
     <string name="easy">Vienkārša</string>
     <string name="medium">Vidējā</string>
     <string name="hard">Smagā</string>
+    <string name="diffnotselected">Izvēlieties sarežģītību pirms sākuma!</string>
 </resources>
