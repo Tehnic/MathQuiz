@@ -11,4 +11,5 @@
     <string name="math" translatable="false">2+2 =</string>
     <string name="timer" translatable="false">60</string>
     <string name="diffnotselected">Choose difficulty before start!</string>
+    <string name="answerfield">Enter an answer</string>
 </resources>

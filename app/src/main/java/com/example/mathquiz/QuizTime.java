@@ -36,13 +36,58 @@ package com.example.mathquiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.widget.TextView;
+
+import java.util.Random;
 
 public class QuizTime extends AppCompatActivity {
+    String operation = "non";
+    public char SelectedOperation = 'n';
+    public TextView equation;
+    public TextView timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_time);
+
+        Intent intent = getIntent();
+        String difficulty = intent.getStringExtra("message_key");
+
+        operationSelect(difficulty); //Выбор операций по сложности
+        selectAChar(operation); //Случайная операция из данных
+        equation = findViewById(R.id.equation);
+        if (equation.equals("2+2 =")) {
+            new CountDownTimer(60000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    timer.setText((int)(millisUntilFinished / 1000));
+                }
+                public void onFinish() {
+                    timer.setText("done!");
+                }
+            }.start();
+        }
+    }
+    public String operationSelect (String difficulty) {
+        if (difficulty == "easy") {
+            operation = "+-";
+        }
+        else if (difficulty == "medium") {
+            operation = "*/";
+        }
+        else if (difficulty == "hard") {
+            operation = "+-*/";
+        }
+        return operation;
+    }
+    public static char selectAChar(String operation){
+        Random random = new Random();
+        int index = random.nextInt(operation.length());
+        selectedOperation = operation.charAt(index);
+        return selectedOperation;
     }
 }

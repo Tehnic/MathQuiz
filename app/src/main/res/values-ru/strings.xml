@@ -10,4 +10,5 @@
     <string name="medium">Средняя</string>
     <string name="hard">Сложная</string>
     <string name="diffnotselected">Выберите сложность перед началом!</string>
+    <string name="answerfield">Напишите ответ</string>
 </resources>
