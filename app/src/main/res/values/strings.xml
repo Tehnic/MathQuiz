@@ -4,7 +4,7 @@
     <string name="difficulty_select">Select your difficulty</string>
     <string name="start">Start the game!</string>
     <string name="gameover">Game over! Your result is:</string>
-    <string name="restart">Restart the game</string>
+    <string name="restart">Restart the game!</string>
     <string name="easy">Easy</string>
     <string name="medium">Medium</string>
     <string name="hard">Hard</string>
@@ -12,4 +12,6 @@
     <string name="timer" translatable="false">60</string>
     <string name="diffnotselected">Choose difficulty before start!</string>
     <string name="answerfield">Enter an answer</string>
+    <string name="exit">Exit the game</string>
+    <string name="restartquestion">Restart the game?</string>
 </resources>

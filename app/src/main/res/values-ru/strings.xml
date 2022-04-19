@@ -5,10 +5,12 @@
     <string name="difficulty_select">Выберите сложность</string>
     <string name="start">Начать игру!</string>
     <string name="gameover">"Игра окончена! Ваш результат: "</string>
-    <string name="restart">Перезапустить игру</string>
+    <string name="restart">Перезапустить игру!</string>
     <string name="easy">Лёгкая</string>
     <string name="medium">Средняя</string>
     <string name="hard">Сложная</string>
     <string name="diffnotselected">Выберите сложность перед началом!</string>
     <string name="answerfield">Напишите ответ</string>
+    <string name="exit">Выйти из игры</string>
+    <string name="restartquestion">Перезапустить игру?</string>
 </resources>

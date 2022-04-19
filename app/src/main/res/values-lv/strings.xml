@@ -5,10 +5,12 @@
     <string name="difficulty_select">Izvēlieties sarežģītību</string>
     <string name="start">Sāciet spēli!</string>
     <string name="gameover">"Spēle ir beigusies! Jūsu rezultāts: "</string>
-    <string name="restart">Restartējiet spēli</string>
+    <string name="restart">Restartējiet spēli!</string>
     <string name="easy">Vienkārša</string>
     <string name="medium">Vidējā</string>
     <string name="hard">Smagā</string>
     <string name="diffnotselected">Izvēlieties sarežģītību pirms sākuma!</string>
     <string name="answerfield">Ievadiet atbildi</string>
+    <string name="exit">Iziet no spēles</string>
+    <string name="restartquestion">Restartējiet spēli?</string>
 </resources>
