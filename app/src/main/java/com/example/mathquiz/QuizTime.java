@@ -51,7 +51,7 @@ import android.widget.Toast;
 import java.util.Random;
 
 public class QuizTime extends AppCompatActivity {
-    public String operation = "non";
+    public String operation = "++";
     public int numberOne = 0;
     public int numberTwo = 0;
     public String difficulty;
@@ -76,37 +76,47 @@ public class QuizTime extends AppCompatActivity {
         difficulty = intent.getStringExtra("message_key");
 
         equation = findViewById(R.id.equation);
-        if (equation.equals("2+2 =")) {
-            Equation = generator(difficulty);
-            equation.setText(Equation);
-            new CountDownTimer(60000, 1000) {
-                public void onTick(long millisUntilFinished) {
-                    timer.setText((int)(millisUntilFinished / 1000));
+        timer = findViewById(R.id.timer);
+        while (timer.getText().toString() != ("0")) {
+            if (equation.getText().toString().equals("2+2 =")) {
+                try {
+                    Equation = generator(difficulty);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                public void onFinish() {
-                    response.setVisibility(View.GONE); //убрать поле ввода
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(QuizTime.this);
-                    alertDialog.setTitle(R.string.gameover+score);
-                    alertDialog.setMessage(R.string.restartquestion);
-                    alertDialog.setPositiveButton(R.string.restart, (dialog, which) -> startActivity(new Intent(QuizTime.this, MainActivity.class)));
-                    alertDialog.setNegativeButton(R.string.exit, (dialog, which) -> {
-                        QuizTime.this.finish();
-                        System.exit(0);
-                    });
-                    alertDialog.show();//вывести окно с результатом и рестартом
+                equation.setText(Equation);
+                new CountDownTimer(60000, 1000) {
+                    public void onTick(long millisUntilFinished) {
+                        timer.setText((int) (millisUntilFinished / 1000));
+                    }
+                    public void onFinish() {
+                        response.setVisibility(View.GONE); //Убрать поле ввода
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(QuizTime.this);
+                        alertDialog.setTitle(R.string.gameover + score);
+                        alertDialog.setMessage(R.string.restartquestion);
+                        alertDialog.setPositiveButton(R.string.restart, (dialog, which) -> startActivity(new Intent(QuizTime.this, MainActivity.class)));
+                        alertDialog.setNegativeButton(R.string.exit, (dialog, which) -> {
+                            QuizTime.this.finish();
+                            System.exit(0);
+                        });
+                        alertDialog.show();//Вывести окно с результатом и рестартом
+                    }
+                }.start();
+            } else {
+                try {
+                    Equation = generator(difficulty);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            }.start();
-        }
-        else {
-            Equation = generator(difficulty);
-            equation.setText(Equation);
+                equation.setText(Equation);
+            }
         }
     }
-    public String generator (String difficulty) {
-        operationSelect(difficulty); //Выбор операций по сложности
-        selectAChar(operation); //Случайная операция из данных
+    public String generator (String difficulty) throws InterruptedException {
+        operation = operationSelect(difficulty); //Выбор операций по сложности
+        SelectedOperation = selectAChar(operation, difficulty); //Случайная операция из данных
         randomNumbers(difficulty);
-        isOperationPossible(SelectedOperation, numberOne, numberTwo, difficulty);
+        OperationIsPossible = isOperationPossible(SelectedOperation, numberOne, numberTwo, difficulty);
 
         if (OperationIsPossible == "yes") {
             if (SelectedOperation == "+") {
@@ -140,7 +150,8 @@ public class QuizTime extends AppCompatActivity {
         }
         return operation;
     }
-    public String selectAChar(String operation){
+    public String selectAChar(String operation, String difficulty){
+        operationSelect(difficulty);
         Random random = new Random();
         int index = random.nextInt(operation.length());
         char krya = operation.charAt(index);
