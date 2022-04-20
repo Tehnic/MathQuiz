@@ -51,7 +51,7 @@ import android.widget.Toast;
 import java.util.Random;
 
 public class QuizTime extends AppCompatActivity {
-    public String operation = "++";
+    public String operation = "non";
     public int numberOne = 0;
     public int numberTwo = 0;
     public String difficulty;
@@ -78,7 +78,7 @@ public class QuizTime extends AppCompatActivity {
         equation = findViewById(R.id.equation);
         timer = findViewById(R.id.timer);
         while (timer.getText().toString() != ("0")) {
-            if (equation.getText().toString().equals("2+2 =")) {
+            if (equation.getText().toString().trim().equals("2+2=")) {
                 try {
                     Equation = generator(difficulty);
                 } catch (InterruptedException e) {
@@ -114,39 +114,46 @@ public class QuizTime extends AppCompatActivity {
     }
     public String generator (String difficulty) throws InterruptedException {
         operation = operationSelect(difficulty); //Выбор операций по сложности
+        Thread.sleep(500);
         SelectedOperation = selectAChar(operation, difficulty); //Случайная операция из данных
-        randomNumbers(difficulty);
+        numberOne = randomNumberOne(difficulty);
+        numberTwo = randomNumberTwo(difficulty);
         OperationIsPossible = isOperationPossible(SelectedOperation, numberOne, numberTwo, difficulty);
 
         if (OperationIsPossible == "yes") {
-            if (SelectedOperation == "+") {
-                answer = Math.addExact(numberOne, numberTwo);
-            }
-            else if (SelectedOperation == "-") {
-                answer = Math.subtractExact(numberOne, numberTwo);
-            }
-            else if (SelectedOperation == "*") {
-                answer = Math.multiplyExact(numberOne, numberTwo);
-            }
-            else if (SelectedOperation == "/") {
-                answer = numberOne/numberTwo;
+            switch (SelectedOperation) {
+                case "+":
+                    answer = Math.addExact(numberOne, numberTwo);
+                    break;
+                case "-":
+                    answer = Math.subtractExact(numberOne, numberTwo);
+                    break;
+                case "*":
+                    answer = Math.multiplyExact(numberOne, numberTwo);
+                    break;
+                case "/":
+                    answer = numberOne / numberTwo;
+                    break;
             }
         }
         else {
+            answer = 0;
             generator(difficulty);
         }
-        mergeEquation(SelectedOperation, numberOne, numberTwo);
+        Equation = mergeEquation(SelectedOperation, numberOne, numberTwo);
         return Equation;
     }
     public String operationSelect (String difficulty) {
-        if (difficulty == "easy") {
-            operation = "+-";
-        }
-        else if (difficulty == "medium") {
-            operation = "*/";
-        }
-        else if (difficulty == "hard") {
-            operation = "+-*/";
+        switch (difficulty) {
+            case "easy":
+                operation = "+-";
+                break;
+            case "medium":
+                operation = "*/";
+                break;
+            case "hard":
+                operation = "+-*/";
+                break;
         }
         return operation;
     }
@@ -155,51 +162,57 @@ public class QuizTime extends AppCompatActivity {
         Random random = new Random();
         int index = random.nextInt(operation.length());
         char krya = operation.charAt(index);
-        String SelectedOperation = String.valueOf(krya);
+        SelectedOperation = String.valueOf(krya);
         return SelectedOperation;
     }
-    public void randomNumbers (String difficulty){
-        if (difficulty == "easy") {
-            numberOne = (int)(Math.random()*200-100); //От -100 до 100
-            numberTwo = (int)(Math.random()*100); //От 0 до 100
+    public int randomNumberOne (String difficulty) {
+        switch (difficulty) {
+            case "easy": numberOne = (int) (Math.random() * 200 - 100); break;//От -100 до 100
+            case "medium": numberOne = (int) (Math.random() * 1000 - 500); break;//От -500 до 500
+            case "hard": numberOne = (int) (Math.random() * 2000 - 1000); break;//От -1000 до 1000
         }
-        if (difficulty == "medium") {
-            numberOne = (int)(Math.random()*1000-500); //От -500 до 500
-            numberTwo = (int)(Math.random()*500); //От 0 до 500
+        return numberOne;
+    }
+    public int randomNumberTwo (String difficulty) {
+        switch(difficulty) {
+            case "easy": numberTwo = (int)(Math.random()*100); break;//От 0 до 100
+            case "medium": numberTwo = (int)(Math.random()*500); break;//От 0 до 500
+            case "hard": numberTwo = (int)(Math.random()*1000); break;//От 0 до 1000
         }
-        if (difficulty == "hard") {
-            numberOne = (int)(Math.random()*2000-1000); //От -1000 до 1000
-            numberTwo = (int)(Math.random()*1000); //От 0 до 1000
-        }
+        return numberTwo;
     }
     public String isOperationPossible (String SelectedOperation, int numberOne, int numberTwo, String difficulty) {
-        if (SelectedOperation == "*") {
-            if (difficulty == "medium") {
-                if (((numberOne * numberTwo) > 500) && ((numberOne * numberTwo) < -500)) {
-                    OperationIsPossible = "no"; // numberOne * numberTwo = [-500; 500]
+        switch (SelectedOperation) {
+            case "*":
+                if (difficulty.equals("medium")) {
+                    if (((numberOne * numberTwo) < 500) && ((numberOne * numberTwo) > -500)) {
+                        OperationIsPossible = "yes"; // numberOne * numberTwo = [-500; 500]
+                    } else OperationIsPossible = "no";
                 }
-                else OperationIsPossible = "yes";
-            }
-            if (difficulty == "hard") {
-                if ((numberOne * numberTwo) > 1000 && ((numberOne * numberTwo) < -1000)) {
-                    OperationIsPossible = "no"; // numberOne * numberTwo = [-1000; 1000]
+                if (difficulty.equals("hard")) {
+                    if ((numberOne * numberTwo) < 1000 && ((numberOne * numberTwo) > -1000)) {
+                        OperationIsPossible = "yes"; // numberOne * numberTwo = [-1000; 1000]
+                    } else OperationIsPossible = "no";
                 }
-                else OperationIsPossible = "yes";
-            }
-        }
-        if (SelectedOperation == "/") {
-            try { // Проверка деления на ноль
-                if ((numberOne % numberTwo) != 0) {
-                    OperationIsPossible = "no";
-                } else OperationIsPossible = "yes";
-            } catch (ArithmeticException e){
-                OperationIsPossible = "no"; // NumberTwo == 0
-            }
+                break;
+            case "/":
+                try { // Проверка деления на ноль
+                    if ((numberOne % numberTwo) != 0) {
+                        OperationIsPossible = "no";
+                    } else OperationIsPossible = "yes";
+                } catch (ArithmeticException e) {
+                    OperationIsPossible = "no"; // NumberTwo == 0
+                }
+                break;
+            case "-":
+            case "+":
+                OperationIsPossible = "yes";
+                break;
         }
         return OperationIsPossible;
     }
     public String mergeEquation (String SelectedOperation, int numberOne, int numberTwo) {
-        String Equation = numberOne+" "+SelectedOperation+" "+numberTwo+" =";
+        Equation = numberOne+" "+SelectedOperation+" "+numberTwo+" =";
         return Equation;
     }
 }
