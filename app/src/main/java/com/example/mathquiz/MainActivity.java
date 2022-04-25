@@ -57,11 +57,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 diffnotselected.show();
             }
             else {
-                startActivity(new Intent(MainActivity.this, QuizTime.class));
-                Intent intent = new Intent(getApplicationContext(), QuizTime.class);
-                intent.putExtra("message_key", difficulty);
-                startActivity(intent);
+                nextActivity(view);
             }
         }
+    }
+    public void nextActivity(View view) {
+        Intent intent = new Intent(view.getContext(), QuizTime.class);
+        intent.putExtra("message_key", difficulty);
+        startActivity(intent);
     }
 }

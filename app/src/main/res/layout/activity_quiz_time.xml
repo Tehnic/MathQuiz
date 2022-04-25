@@ -63,10 +63,10 @@
         android:layout_marginBottom="389dp"
         android:ems="10"
         android:hint="@string/answerfield"
-        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/equation"
-        app:layout_constraintTop_toBottomOf="@+id/timer" />
+        app:layout_constraintTop_toBottomOf="@+id/timer"
+        android:inputType="text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
