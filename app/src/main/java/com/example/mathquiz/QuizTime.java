@@ -1,48 +1,19 @@
-/*
- 1. Через intent получать message_key со сложностью игры
- 2. По сложности игры выбирать операции, которые будут
-      2.1. easy - +/- (+-200), medium - * /÷ (+-500), hard - +/-/* /÷ (+-1000)
- 3. Генерировать пример со случайными числами и знаком из данных
-      3.1. Если операция - умножение, то проверять, не превосходит ли произведение пределов уровня
-          3.1.1. Если да, то вернуться к пункту 3
-          3.1.2. Если нет, то перейти к пункту 4
-      3.2. Если операция - деление, то проверять, целое ли решение
-          3.2.1. Если да, то перейти к пункту 4
-          3.2.2. Если нет, то вернуться к пункту 3
- 4. Записать в переменные answer (ответ на сгенерированную задачу) и answerDigits (количество символов в ответе (включая знак минус))
- 5. Первый ли это сгенерированный пример?
-      4.1. Если да, то запустить таймер на 60 секунд и перейти к пункту 6
-      4.2. Если нет, то перейти к пункту 6
- 6. Проверять, сколько символов ввёл пользователь в поле response
-      6.1. responseDigits == answerDigits
-          6.1.1. Если да, то записать введённое значение в переменную responseAnswer и перейти к пункту 7
-          6.1.2. Если нет, то вернуться к пункту 6
- 7. Проверять введённый пользователем ответ
-      7.1. responseAnswer == answer
-          7.1.1. Если да, то очищать поле ввода, прибавлять к переменной score +1 и вернуться к пункту 3
-          7.1.2. Если нет, то очищать поле ввода и вернуться к пункту 6
- 8. Проверять таймер
-      8.1. Таймер не закончился?
-          8.1.1. Если да, то вернуться к пункту 3
-          8.1.2. Если нет, то перейти к пункту 9
-      8.2. Таймер не начинался? (дебаг, запрашивать через каждый пункт 3)
-          8.2.1. Если да, то перейти к пункту 11
-          8.2.2. Если нет, то вернуться к пункту 3
- 9. Выводить окно с результатом (score)
- 10. Если пользователь нажмёт на кнопку повтора, то перейти к пункту 11
- 11. Вернуться к activity_main и очистить переменную score
-*/
 package com.example.mathquiz;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.View;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.Random;
 
 public class QuizTime extends AppCompatActivity {
@@ -56,9 +27,7 @@ public class QuizTime extends AppCompatActivity {
     TextView timer;
     String Equation;
     int answer;
-    int responseDigits;
-    EditText response;
-    int score;
+    int score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +44,6 @@ public class QuizTime extends AppCompatActivity {
         equation = findViewById(R.id.equation);
         timer = findViewById(R.id.timer);
 
-//        Equation = generator(difficulty);
-//        equation.setText(Equation);
-
-
             if (equation.getText().toString().trim().equals("2+2 =")) {
                 Equation = generator(difficulty);
                 equation.setText(Equation);
@@ -88,26 +53,37 @@ public class QuizTime extends AppCompatActivity {
                         EditText text = (EditText) (findViewById(R.id.response));
                         if (text.getText().toString().length() == String.valueOf(answer).length()) {
                             if (text.getText().toString().equals(String.valueOf(answer))) {
+                                text.getText().clear();
                                 switch (difficulty) {
                                     case "easy":
-                                        score++;
+                                        score = score + 1;
+                                        break;
                                     case "medium":
-                                        score = score + 2;
+                                        score = score + 3;
+                                        break;
                                     case "hard":
                                         score = score + 5;
+                                        break;
                                 }
                                 Equation = generator(difficulty);
                                 equation.setText(Equation);
-                                //response.getText().clear();
+                            }
+                            else {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(VibrationEffect.createOneShot(100, 255));
+                                }
+                                else {
+                                    ((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).vibrate(150);
+                                }
+                                text.getText().clear();
                             }
                         }
                     }
 
                     public void onFinish() {
-                        response.setVisibility(View.GONE); //Убрать поле ввода
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(QuizTime.this);
-                        alertDialog.setTitle(R.string.gameover + score);
-                        alertDialog.setMessage(R.string.restartquestion);
+                        String sb = getResources().getString(R.string.gameover) + " " + score + "\n" + getResources().getString(R.string.restartquestion);
+                        alertDialog.setMessage(sb);
                         alertDialog.setPositiveButton(R.string.restart, (dialog, which) -> startActivity(new Intent(QuizTime.this, MainActivity.class)));
                         alertDialog.setNegativeButton(R.string.exit, (dialog, which) -> {
                             QuizTime.this.finish();
@@ -120,8 +96,6 @@ public class QuizTime extends AppCompatActivity {
                 Equation = generator(difficulty);
                 equation.setText(Equation);
             }
-//        while (!timer.getText().toString().equals("0")) {
-//        }
     }
     public String generator (String difficulty) {
         operation = operationSelect(difficulty); //Выбор операций по сложности
@@ -176,21 +150,21 @@ public class QuizTime extends AppCompatActivity {
     }
     public int randomNumberOne (String difficulty, String SelectedOperation) {
         switch (difficulty) {
-            case "easy": numberOne = (int) (Math.random() * 200 - 100); break;//От -100 до 100
+            case "easy": numberOne = (int) (Math.random() * 60 - 30); break;//От -30 до 30
             case "medium":
                 if (SelectedOperation.equals("*") || SelectedOperation.equals("/")) {
-                    numberOne = (int) (Math.random()*70-35);
+                    numberOne = (int) (Math.random()*30-15);
                 }
                 else {
-                    numberOne = (int) (Math.random() * 1000 - 500); //От -500 до 500
+                    numberOne = (int) (Math.random() * 200 - 100); //От -100 до 100
                 }
                 break;
             case "hard":
                 if (SelectedOperation.equals("*") || SelectedOperation.equals("/")) {
-                    numberOne = (int) (Math.random()*100-50);
+                    numberOne = (int) (Math.random()*50-25);
                 }
             else {
-                numberOne = (int) (Math.random() * 2000 - 1000); //От -1000 до 1000
+                numberOne = (int) (Math.random() * 600 - 300); //От -300 до 300
             }
                 break;
         }
@@ -198,21 +172,21 @@ public class QuizTime extends AppCompatActivity {
     }
     public int randomNumberTwo (String difficulty, String SelectedOperation) {
         switch(difficulty) {
-            case "easy": numberTwo = (int) (Math.random() * 100); break;//От 0 до 100
+            case "easy": numberTwo = (int) (Math.random() * 30); break;//От 0 до 30
             case "medium":
                 if (SelectedOperation.equals("*") || SelectedOperation.equals("/")) {
-                    numberTwo = (int) (Math.random()*35);
+                    numberTwo = (int) (Math.random()*15);
                 }
                 else {
-                    numberTwo = (int) (Math.random() * 500); //От 0 до 500
+                    numberTwo = (int) (Math.random() * 100); //От 0 до 100
                 }
                 break;
             case "hard":
                 if (SelectedOperation.equals("*") || SelectedOperation.equals("/")) {
-                    numberTwo = (int) (Math.random()*50);
+                    numberTwo = (int) (Math.random()*25);
                 }
                 else {
-                    numberTwo = (int) (Math.random() * 1000); //От 0 до 1000
+                    numberTwo = (int) (Math.random() * 300); //От 0 до 300
                 }
                 break;
         }
