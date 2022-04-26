@@ -56,8 +56,6 @@ public class QuizTime extends AppCompatActivity {
     TextView timer;
     String Equation;
     int answer;
-    int answerDigits;
-    int responsive;
     int responseDigits;
     EditText response;
     int score;
@@ -76,15 +74,19 @@ public class QuizTime extends AppCompatActivity {
         super.onStart();
         equation = findViewById(R.id.equation);
         timer = findViewById(R.id.timer);
-        while (!timer.getText().toString().equals("0")) {
-            if (equation.getText().toString().trim().equals("2+2=")) {
+
+//        Equation = generator(difficulty);
+//        equation.setText(Equation);
+
+
+            if (equation.getText().toString().trim().equals("2+2 =")) {
                 Equation = generator(difficulty);
                 equation.setText(Equation);
                 new CountDownTimer(60000, 100) {
                     public void onTick(long millisUntilFinished) {
-                        timer.setText((int) (millisUntilFinished / 1000));
+                        timer.setText(String.valueOf(millisUntilFinished / 1000));
                         EditText text = (EditText) (findViewById(R.id.response));
-                        if (text.getText().toString().length() == responseDigits) {
+                        if (text.getText().toString().length() == String.valueOf(answer).length()) {
                             if (text.getText().toString().equals(String.valueOf(answer))) {
                                 switch (difficulty) {
                                     case "easy":
@@ -96,8 +98,7 @@ public class QuizTime extends AppCompatActivity {
                                 }
                                 Equation = generator(difficulty);
                                 equation.setText(Equation);
-                            } else {
-                                response.getText().clear();
+                                //response.getText().clear();
                             }
                         }
                     }
@@ -119,7 +120,8 @@ public class QuizTime extends AppCompatActivity {
                 Equation = generator(difficulty);
                 equation.setText(Equation);
             }
-        }
+//        while (!timer.getText().toString().equals("0")) {
+//        }
     }
     public String generator (String difficulty) {
         operation = operationSelect(difficulty); //Выбор операций по сложности
